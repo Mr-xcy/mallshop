@@ -5,13 +5,11 @@
  * @Date: 2020-09-21 11:37:37
 -->
 <template>
-  <div>
-    <swiper class="swiper">
-      <swiper-item class="swiper-item" v-for="(item, index) in topImages" :key="index">
-        <img :src="item" />
-      </swiper-item>
-    </swiper>
-  </div>
+  <swiper class="detail-swiper">
+    <swiper-item class="swiper-item" v-for="(item, index) in topImages" :key="index">
+      <img :src="item" @load="imageLoad" />
+    </swiper-item>
+  </swiper>
 </template>
 
 <script>
@@ -30,11 +28,18 @@ export default {
       },
     },
   },
+  methods: {
+    // 监听图片加载
+    imageLoad() {
+      // 使用事件总线向父组件发射事件
+      this.$bus.$emit("itemImageLoad");
+    },
+  },
 };
 </script>
 
 <style scoped>
-.swiper {
+.detail-swiper {
   height: 300px;
   overflow: hidden;
 }

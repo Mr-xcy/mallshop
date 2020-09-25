@@ -1,12 +1,12 @@
 <!--
- * @Descripttion: 
+ * @Descripttion: tab切换商品item组件
  * @version: 
  * @Author: xuchunyuan
  * @Date: 2020-09-17 14:54:31
 -->
 <template>
   <div class="goods-item" @click="goodsClick">
-    <img @load="imageLoad" :src="goodsItem.show.img" alt />
+    <img @load="imageLoad" :src="showImage" alt />
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
@@ -35,6 +35,17 @@ export default {
     //跳转详情页
     goodsClick() {
       this.$router.push("/detail/" + this.goodsItem.iid);
+      // this.$router.push({
+      //   path: "/detail",
+      //   query: {
+      //     iid: this.goodsItem.iid,
+      //   },
+      // });
+    },
+  },
+  computed: {
+    showImage() {
+      return this.goodsItem.image || this.goodsItem.show.img;
     },
   },
 };

@@ -38,7 +38,7 @@ export default {
     },
     // 监听加载
     refresh() {
-      // console.log("------");
+      // console.log("---refresh---");
       this.scroll && this.scrollTo && this.scroll.refresh();
     },
     // 上垃加载完成

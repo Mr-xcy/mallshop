@@ -53,10 +53,11 @@ import NavBar from "components/common/navbar/NavBar.vue";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/bscroll/BScroll";
-import BackTop from "components/content/backTop/BackTop";
+// import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeData, getHomeGoodsData } from "network/home.js";
 import { debounce } from "common/utils";
+import { itemListenerMixin, backTop } from "common/mixin";
 
 export default {
   components: {
@@ -67,7 +68,7 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop,
+    // BackTop,
   },
   data() {
     return {
@@ -82,11 +83,14 @@ export default {
       },
       currentType: "pop",
       tabOffsetTop: 0, //tab栏距离顶部的位置
-      isShowBackTop: false,
+      // isShowBackTop: false,
       isTabFixed: false, //tab栏吸顶
       saveY: 0, //保存组件离开时滚动的y值
+      // itemListener: null,
     };
   },
+  // 混入
+  mixins: [itemListenerMixin, backTop],
   methods: {
     // 获取首页数据
     getHomeData() {
@@ -128,11 +132,13 @@ export default {
       this.$refs.tabControl.currentIndex = index;
       this.$refs.tabControlRef.currentIndex = index;
     },
-    //监听组件点击事件，需要加上.native修饰符（监听组件根元素原生事件）
-    backTop() {
-      // 获取scroll对象,调用scrollTo方法
-      this.$refs.scroll.scrollTo(0, 0, 500);
-    },
+
+    //抽离到mixin
+    // //监听组件点击事件，需要加上.native修饰符（监听组件根元素原生事件）
+    // backTop() {
+    //   // 获取scroll对象,调用scrollTo方法
+    //   this.$refs.scroll.scrollTo(0, 0, 500);
+    // },
     // 监听滚动位置
     contentScroll(position) {
       // 1.判断BackTop是否显示
@@ -174,14 +180,15 @@ export default {
     this.getHomeGoodsData("sell");
   },
   mounted() {
-    // 防抖
-    const refresh = debounce(this.$refs.scroll.refresh, 200);
-    // 监听 事件总线中的图片加载事件
-    this.$bus.$on("itemImageLoad", () => {
-      // console.log("---------");
-      // this.$refs.scroll.refresh();
-      refresh();
-    });
+    // 使用混入将mounted中重复代码抽离
+    // // 防抖
+    // const refresh = debounce(this.$refs.scroll.refresh, 200);
+    // // 对监听事件保存
+    // this.itemListener = () => {
+    //   refresh();
+    // };
+    // // 监听 事件总线中的图片加载事件
+    // this.$bus.$on("itemImageLoad", this.itemListener);
   },
   // 组件进入时
   activated() {
@@ -190,7 +197,10 @@ export default {
   },
   // 组件离开
   deactivated() {
+    //保存组件离开时滚动的y值
     this.saveY = this.$refs.scroll.getScrollY();
+    // 取消全局事件的监听
+    this.$bus.$off("itemImageLoad", this.itemListener);
   },
 };
 </script>

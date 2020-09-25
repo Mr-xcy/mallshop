@@ -40,6 +40,8 @@ export default {
     //   点击tab
     itemClick(index) {
       this.currentIndex = index;
+      // 发送事件
+      this.$emit("titleClick", index);
     },
     backClick() {
       this.$router.go(-1);
